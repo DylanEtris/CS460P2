@@ -3,6 +3,22 @@ import csv
 import sys
 import pdb
 import operator
+import copy
+
+def normalize(data, feature_num = None):
+  data = copy.deepcopy(data)
+  if feature_num != None:
+    features = [example[feature_num] for example in data]
+    max_f = max(features)
+    min_f = min(features)
+    for i in range(len(data)):
+      data[i][feature_num] = (data[i][feature_num] - min_f) / (max_f - min_f)
+  else:
+    max_f = max(data)
+    min_f = min(data)
+    for f in range(len(data)):
+      data[f] = (data[f] - min_f) / (max_f - min_f)
+  return data
 
 # Function: read_csv
 # Inputs:   path to csv file
@@ -18,6 +34,13 @@ def read_csv(path, headers = False):
   data_file.close()
   if headers:
     data.pop(0)
+
+  for i in range(len(data)):
+    for j in range(len(data[i])):
+      try:
+        data[i][j] = float(data[i][j])
+      except:
+        data[i][j] = data[i][j]
   return data
 
 # Function: sort_data
